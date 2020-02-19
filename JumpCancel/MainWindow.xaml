@@ -1,0 +1,77 @@
+﻿<Window x:Class="JumpCancelSimulator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:jumpCancelSimulator="clr-namespace:JumpCancelSimulator"
+        mc:Ignorable="d"
+        Title="Jump Cancel Simulator v2.1" Height="300" Width="550" FontFamily="Arial Black" ResizeMode="CanResizeWithGrip">
+    <Window.DataContext>
+        <jumpCancelSimulator:MainViewModel/>
+    </Window.DataContext>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel HorizontalAlignment="Center">
+            <TextBlock FontSize="20" Text="Jump Cancel Simulator v2.1" Margin="5" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <CheckBox FontSize="20" Content="Enabled" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,10,0" IsChecked="{Binding IsEnabled, Mode=TwoWay}"/>
+                <CheckBox Margin="5,0,20,0" FontSize="20" Name="DxHookCheckbox" Content="DX Hook" VerticalAlignment="Center" VerticalContentAlignment="Center" IsChecked="{Binding IsHooked, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock FontSize="20" Text="Frame Delay" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                <TextBox FontSize="20" Text="{Binding Delay, Mode=TwoWay}" MinWidth="30" VerticalAlignment="Center" TextAlignment="Center" Margin="5" KeyUp="UIElement_OnKeyUp"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{Binding HookVisibility}" HorizontalAlignment="Center">
+                <ComboBox ItemsSource="{Binding ProcessList}" SelectedItem="{Binding SelectedProcess, Mode=TwoWay}" Width="200" FontSize="20">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ProcessName}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Content="{Binding InjectButtonText}" Margin="10,0,10,0" Click="InjectClick"/>
+                <Button Content="Refresh" Click="RefreshClick"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button FontSize="20" Content="Add" Click="AddClick" Margin="0,5,5,5"/>
+                <Button FontSize="20" Content="Save" Margin="5" Click="SaveClick"/>
+            </StackPanel>
+        </StackPanel>
+
+        <ListView Grid.Row="1" ItemsSource="{Binding Mappings}" HorizontalAlignment="Center" Margin="10" MinWidth="310">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid MouseRightButtonUp="DeleteItem" HorizontalAlignment="Stretch" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding KeyString}" Margin="0,0,10,0" MouseUp="SetKey" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Border Grid.Column="0" Background="Black" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding AnyKeyVisibility}">
+                            <TextBlock Text="PRESS ANY KEY" Foreground="DarkOrange" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding Jumps}" SelectedIndex="{Binding Jump}" HorizontalAlignment="Right" Width="160">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Value}" FontSize="20" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <ComboBox Grid.Column="2" ItemsSource="{Binding Options}" SelectedIndex="{Binding Option, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" IsEnabled="{Binding OptionAvailable}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Value}" FontSize="20" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </Grid>
+</Window>
